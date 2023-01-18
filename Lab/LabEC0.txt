@@ -1,0 +1,26 @@
+Exercici 0.2
+    lui 0x3C010000
+    ori 0x342A0000
+
+Exercici 0.3
+    0x10010000
+
+Exercici 0.5
+    -55
+
+Exercici 0.6
+    -1, -2, -3, -4, -5, -6, -7, -8, -9, -10, 0
+
+Exercici 0.8
+    no et guarda el -1, falta una iteració del bucle
+
+Exercici 0.9
+    canviem de posició la instrucció: addiu $t1, $t1, -1
+    al principi del bucle
+
+    modifiquem la constant de la intrucció: li $t1, 9
+    per la instrucció: li $t1, 10
+
+Exercici 0.10
+    modificar la instrucció: subu $t0, $t1, $t0
+    per: subu $t0, $t0, $t1
