@@ -1,0 +1,107 @@
+
+
+Exercici 3.1:
+
+    .align 2
+    mat1: .space 5*6*4
+    mat2: .space 3*5
+    .align 3
+    mat3: .space 2*2*8
+    mat4: .word 2, 3, 1, 2, 4, 3
+
+Exercici 3.2:
+
+    mat1 = mat1 + 4*6*4 + 3*4
+    mat2 = mat2 + 2*5 + 4
+    mat3 = mat3 + 1*2*8
+    mat4 = mat4 + 2*4
+
+Exercici 3.3 i 3.4:
+            .data 
+    mat1: 	.space 120
+    mat4: 	.align 2
+        .word 2, 3, 1, 2, 4, 3
+    col:	.word 2
+
+        .text 
+        .globl main
+    main:
+        addiu $sp, $sp, -12
+        sw $s0, 0($sp)
+        sw $s1, 4($sp)
+        sw $ra, 8($sp)
+        la $s0, mat1
+        la $s1, mat4
+        move $a0, $s1
+        lw $a1, 8($s1)
+        la $a2, col
+        lw $a2, 0($a2)
+        jal subr
+        sw $v0, 108($s0)
+        move $a0, $s1
+        li $a1, 1
+        li $a2, 1
+        jal subr
+        sw $v0, 0($s0)
+        lw $s0, 0($sp)
+        lw $s1, 4($sp)
+        lw $ra, 8($sp)
+        addiu $sp, $sp, 12
+        jr $ra
+
+
+    subr:
+        li $t0, 12
+        mult $t0, $a1
+        mflo $t0
+        addu $t0, $t0, $a0
+        sll $t1, $a2, 2
+        addu $t0, $t0, $t1
+        la $t1, mat1
+        li $t2, 24
+        mult $t2, $a2
+        mflo $t2
+        addu $t1, $t1, $t2
+        lw $t0, 0($t0)
+        sw $t0, 20($t1)
+        move $v0, $a1
+        jr $ra
+
+Exercici 3.5 i 3.6:
+
+        .data 
+    mat:	.word 0,0,2,0,0,0
+        .word 0,0,4,0,0,0
+        .word 0,0,6,0,0,0
+        .word 0,0,8,0,0,0
+    result:	.word 0
+
+        .text 
+        .globl main
+    main:
+        addiu $sp, $sp, -4
+        sw $ra, 0($sp)
+        la $a0, mat
+        jal suma_col
+        la $t0, result
+        sw $v0, 0($t0)
+        lw $ra, 0($sp)
+        addiu $sp, $sp, 4
+        jr $ra	
+
+    suma_col:
+        li $t0, 0
+        li $t1, 0
+        move $t2, $a0
+        addiu $t2, $t2, 8
+    for:	
+	  sltiu $t3, $t1, 4
+        beq $t3, $zero, fi
+        lw $t4, 0($t2)
+        addu $t0, $t0, $t4
+        addiu $t2, $t2, 24
+        addiu $t1, $t1, 1
+        b for
+    fi:	
+	  move $v0, $t0
+        jr $ra

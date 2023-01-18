@@ -1,0 +1,47 @@
+4.1
+decompon:
+    li $to, 18
+    slt $t1, $a0, $zero
+    sw $t1, 0($a1)
+    sll $a0, $a0, 1
+    bne $a0, $zero, cond
+if: li $t0, 0
+    b fi_if
+while: 
+    sll $a0, $a0, 1
+    addiu $t0, $t0, -1
+cond: 
+    bge $a0, $zero, while
+    srl $a0, $a0, 8
+    li $t2, 0x7FFFFF
+    and $a0, $a0, $t2
+    addiu $t0, $t0, 127
+fi_if: 
+    sw $t0, 0($a2)
+    sw $a0, 0($a3)
+    jr $ra
+    
+4.2
+compon:
+    sll $v0, $a0, 31
+    sll $a1, $a1, 23
+    or $v0, $v0, $a1
+    or $v0, $v0, $a2
+    mtc1 $v0, $f0
+    jr $ra
+4.2.2
+Canviant la pestanya de registres a "Coproc 1" mirant f0 amb la pestanya de "hexadecimal values" desmarcada.
+El valor que dona és: -32024,625
+
+4.3
+0x00000000 – 0x00000000
+0x80000000 – 0x80000000^
+0x0000CC00 – 0x414C0000
+
+4.4
+1) Quan la mantissa tingui més de 24 xifres
+2) 0x0FFFFFF1 – 0x477FFFFF
+3) es produeix en cf >> 8
+4) truncament
+5) fora rang coma fixa 2^39
+el menor nombre és el 2-149 

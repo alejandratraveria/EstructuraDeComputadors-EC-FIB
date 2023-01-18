@@ -1,0 +1,217 @@
+1.A.
+
+1.1
+
+	.data
+aa:	.byte -5
+bb:	.half -344
+cc:	.dword -3
+dd:	.byte 0xA0
+ee:	.word 5799
+ff:	.half -1
+
+1.2
+
+Etiqueta	@Memoria	Contingut
+aa:		0x10010000	FB
+		0x10010001	X
+bb:		0x10010002	A8
+		0x10010003	FE
+		0x10010004	X
+		0x10010005	X
+		0x10010006	X
+		0x10010007	X
+cc:		0x10010008	FD
+		0x10010009	FF
+		0x1001000A	FF
+		0x1001000B	FF
+		0x1001000C	FF
+		0x1001000D	FF
+		0x1001000E	FF
+		0x1001000F	FF
+dd:		0x10010010	A0
+		0x10010011	X
+		0x10010012	X
+		0x10010013	X
+ee:		0x10010014	A7
+		0x10010015	16
+		0x10010016	00
+		0x10010017	00
+ff:		0x10010018	FF
+		0x10010019	FF
+1.B
+
+Macros MIPS	Instruccions MIPS
+La $s3, aa
+
+li $s4, 65535
+
+li $s5, 65536
+
+move $s0, $s1	lui $1, 0x00001001
+ori $19, $1, 0x00000000
+	Ori $20, $0, 0x0000FFFF
+	lui $1, 0x00000001
+ori $21, $1, 0x00000000
+	addu $16, $0, $17
+
+1.C
+
+1.3
+
+Codi assemblador MIPS	Adreça efectiva d’accés a memòria	Núm bytes accedits	Valor llegit/escrit
+main:
+        la $s0, aa
+        lb $s1, 0($s0)
+
+        la $s0, bb
+        lh $s2, 0($s0)
+
+        la $s0, cc
+        lw $s3, 0($s0)
+        lw $s4, 4($s0)
+
+        la $s0, dd
+        lbu $s5, 0($s0)
+
+        la $s0, ff
+        lh $s6, 0($s0)
+
+        sh $s1, 0($s0)
+	0x10010000
+
+
+	1	0xFFFFFFFB
+	0x10010002
+	2	0xFFFFFEA8
+	0x10010008
+
+
+	8	0xFFFFFFFFFFFFFFFF
+	0x10010010
+
+	1	0x000000A0
+	0x10010018
+	2	0xFFFFFFFF
+	0x10010018	2	0xFFFFFFFB
+
+1.D
+
+1.4
+
+&pdada	0x10010004
+pdada	0x10010000
+*pdada	0x0003
+
+&dada	0x10010000
+dada	0x0003
+
+1.E
+
+1.5
+
+	.data
+A:	.word 3, 5, 7
+punter:	.word 0
+	.text
+	.globl main
+main:
+	la $t0, A
+	addiu $t0, $t0, 8
+	la $t1, punter
+	sw $t0, 0($t1)
+
+	lw $s0, 0($t1)
+	lw $s0, 0($s0)
+	addiu $s0, $s0, 2
+
+	lw $t3, 0($t1)
+	lw $t3, -8($t3)
+	addu $s0, $s0, $t3
+
+	la $t4, A
+	addiu $t4, $t4, 4
+	sw $s0, 0($t4)
+
+	li $v0, 1
+	move $a0, $s0
+	syscall
+
+	jr $ra
+
+1.F
+
+1.6
+
+vec:	.word 9, 8, 7, 6, 5, 4, 3, 2, 1, 0
+
+@vec[i] = vec + i*4
+
+	la $t1, vec
+	sll $t2, $s2, 2
+	addu $t1, $t1, $t2
+	sw $t1, 0($s1)
+
+1.G
+
+1.7
+
+	.data
+fib:	.space 40
+	.text
+	.globl main
+main:
+	li $s0, 2
+	la $t1, fib
+	sw $zero, 0($t1)
+	li $t2, 1
+	sw $t2, 4($t1)
+while:
+	slti $t0, $s0, 10
+	beq $t0, $zero, fi
+
+	sll $s3, $s0, 2
+	addu, $s3, $s3, $t1
+	lw $s1, -4($s3)
+	lw $s2, -8($s3)
+	addu $s4, $s1, $s2
+	sw $s4, 0($s3)
+	addiu $s0, $s0, 1
+	b while
+fi:
+	jr $ra
+
+1.H
+
+1.8
+
+	.data
+cadena:	.byte -1, -1, -1, -1, -1, -1
+vec:	.word 5, 6, 8, 9, 1
+	.text
+	.globl main
+main:
+	li $s0, 0
+	la $s1, cadena
+	la $s2, vec + 16
+	li $s3, 48
+while:
+	li $t0, 5
+	bge $s0, $t0, fi
+
+	sll $t1, $s0, 2
+	subu $t2, $s2, $t1
+	lw $t3, 0($t2)
+	addu $t3, $t3, $s3
+	addu $t4, $s1, $s0
+	sb $t3, 0($t4)
+
+	addiu $s0, $s0, 1
+	b while
+fi:
+	sb $zero, 5($s1)
+	li $v0, 4
+	la $a0, cadena
+	syscall
+
+	jr $ra
